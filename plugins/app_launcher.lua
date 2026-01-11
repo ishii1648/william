@@ -43,10 +43,12 @@ function AppLauncher:getApps()
                 local appName = appPath:match("([^/]+)%.app$")
                 if appName then
                     local bundleInfo = hs.application.infoForBundlePath(appPath)
+                    local bundleID = bundleInfo and bundleInfo.CFBundleIdentifier
                     table.insert(apps, {
                         name = appName,
                         path = appPath,
-                        bundleID = bundleInfo and bundleInfo.CFBundleIdentifier,
+                        bundleID = bundleID,
+                        icon = bundleID and hs.image.imageFromAppBundle(bundleID),
                     })
                 end
             end
@@ -78,16 +80,10 @@ function AppLauncher:getChoices(query, settings)
             score = matchScore
         end
 
-        -- アプリアイコンを取得
-        local icon = nil
-        if app.bundleID then
-            icon = hs.image.imageFromAppBundle(app.bundleID)
-        end
-
         table.insert(choices, {
             text = app.name,
             subText = app.path,
-            image = icon,
+            image = app.icon,
             score = score,
             appPath = app.path,
             appName = app.name,
@@ -103,8 +99,8 @@ end
 --- @param choice table 選択された候補
 --- @param settings table プラグイン設定
 function AppLauncher:execute(choice, settings)
-    if choice.appPath then
-        hs.application.open(choice.appPath)
+    if choice.appName then
+        hs.application.launchOrFocus(choice.appName)
     end
 end
 
