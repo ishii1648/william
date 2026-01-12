@@ -11,7 +11,7 @@ describe("PluginLoader", function()
     describe("new()", function()
         it("インスタンスを作成する", function()
             local config = { plugins = {} }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
 
             assert.is_not_nil(loader)
             assert.are.same({}, loader.loadedPlugins)
@@ -19,7 +19,7 @@ describe("PluginLoader", function()
 
         it("configを保持する", function()
             local config = { plugins = {"test"}, pluginSettings = {} }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
 
             assert.are.equal(config, loader.config)
         end)
@@ -52,7 +52,7 @@ describe("PluginLoader", function()
                     mock_plugin = { key = "value" }
                 }
             }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
             local plugins = loader:loadAll()
 
             assert.are.equal(1, #plugins)
@@ -66,7 +66,7 @@ describe("PluginLoader", function()
                     mock_plugin = { key = "value" }
                 }
             }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
             loader:loadAll()
 
             assert.is_true(mockPlugin.initCalled)
@@ -78,7 +78,7 @@ describe("PluginLoader", function()
                 plugins = {"mock_plugin"},
                 pluginSettings = {}
             }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
             loader:loadAll()
 
             assert.is_true(mockPlugin.initCalled)
@@ -90,7 +90,7 @@ describe("PluginLoader", function()
                 plugins = {"nonexistent_plugin"},
                 pluginSettings = {}
             }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
             local plugins = loader:loadAll()
 
             assert.are.equal(0, #plugins)
@@ -106,7 +106,7 @@ describe("PluginLoader", function()
                 plugins = {"mock_plugin", "mock_plugin2"},
                 pluginSettings = {}
             }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
             local plugins = loader:loadAll()
 
             assert.are.equal(2, #plugins)
@@ -124,7 +124,7 @@ describe("PluginLoader", function()
                 plugins = {"no_init_plugin"},
                 pluginSettings = {}
             }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
             local plugins = loader:loadAll()
 
             assert.are.equal(1, #plugins)
@@ -143,7 +143,7 @@ describe("PluginLoader", function()
                 plugins = {"test_plugin"},
                 pluginSettings = {}
             }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
             loader:loadAll()
 
             local result = loader:get("test_plugin")
@@ -154,7 +154,7 @@ describe("PluginLoader", function()
 
         it("存在しないプラグインはnilを返す", function()
             local config = { plugins = {}, pluginSettings = {} }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
 
             assert.is_nil(loader:get("nonexistent"))
         end)
@@ -164,7 +164,7 @@ describe("PluginLoader", function()
                 plugins = {"some_plugin"},
                 pluginSettings = {}
             }
-            local loader = PluginLoader:new(config)
+            local loader = PluginLoader.new(config)
 
             assert.is_nil(loader:get("some_plugin"))
         end)

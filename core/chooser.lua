@@ -7,7 +7,7 @@ Chooser.__index = Chooser
 --- 新しいChooserインスタンスを作成
 --- @param opts table {config: table, onSelect: function, onQueryChange: function}
 --- @return table Chooserインスタンス
-function Chooser:new(opts)
+function Chooser.new(opts)
     local self = setmetatable({}, Chooser)
     self.config = opts.config or {}
     self.onSelect = opts.onSelect

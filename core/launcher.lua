@@ -11,7 +11,7 @@ Launcher.__index = Launcher
 --- 新しいLauncherインスタンスを作成
 --- @param config table 設定
 --- @return table Launcherインスタンス
-function Launcher:new(config)
+function Launcher.new(config)
     local self = setmetatable({}, Launcher)
     self.config = config
     self.chooser = nil
@@ -27,18 +27,18 @@ end
 --- ランチャーを開始
 function Launcher:start()
     -- プラグインをロード
-    self.pluginLoader = PluginLoader:new(self.config)
+    self.pluginLoader = PluginLoader.new(self.config)
     self.plugins = self.pluginLoader:loadAll()
 
     -- Chooserを初期化
-    self.chooser = Chooser:new({
+    self.chooser = Chooser.new({
         config = self.config.ui,
         onSelect = function(choice) self:handleSelection(choice) end,
         onQueryChange = function(query) self:handleQueryChange(query) end,
     })
 
     -- ホットキーをバインド
-    self.hotkey = Hotkey:new(self.config.hotkey, function()
+    self.hotkey = Hotkey.new(self.config.hotkey, function()
         self:toggle()
     end)
     self.hotkey:enable()

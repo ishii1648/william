@@ -98,7 +98,7 @@ end
 --- 選択時のアクション
 --- @param choice table 選択された候補
 --- @param settings table プラグイン設定
-function AppLauncher:execute(choice, settings)
+function AppLauncher.execute(_self, choice, _settings)
     if choice.appName then
         hs.application.launchOrFocus(choice.appName)
     end
