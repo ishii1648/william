@@ -4,6 +4,12 @@
 local fuzzy = require("utils.fuzzy")
 
 local Ghq = {}
+
+-- アイコン画像のロード
+local scriptPath = debug.getinfo(1, "S").source:sub(2)
+local pluginDir = scriptPath:match("(.*/)")
+local assetsDir = pluginDir and pluginDir .. "../assets/" or "assets/"
+local githubIcon = hs.image.imageFromPath(assetsDir .. "github-mark.png")
 Ghq.__index = Ghq
 
 -- このプラグインを排他的に使用するプレフィックス
@@ -115,6 +121,7 @@ function Ghq:getChoices(query, settings)
             table.insert(choices, {
                 text = repo.displayName,
                 subText = repo.path,
+                image = (repo.host == "github.com") and githubIcon or nil,
                 score = score,
                 repoPath = repo.path,
                 githubUrl = githubUrl,

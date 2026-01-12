@@ -65,6 +65,7 @@ mkdir -p "$HS_DIR"
 rsync -a --delete \
     --include='init.lua' \
     --include='config.lua' \
+    --include='assets/***' \
     --include='core/***' \
     --include='plugins/***' \
     --include='utils/***' \
