@@ -12,5 +12,8 @@ worktreeをHammerspoonにデプロイし、静的解析を実行します。
    - luacheck の出力を確認し、指摘された問題をすべて修正
    - 再度 `make lint` を実行
    - warning 0 になるまで繰り返す
-3. **warning 0 を確認後、`make deploy` を実行**
-4. **成功したら Hammerspoon をリロードするよう案内**
+3. **`make test` を実行**
+   - テストが通ることを確認
+   - 失敗したら修正
+4. **lint と test が通ったら `make deploy` を実行**
+5. **成功したら Hammerspoon をリロードするよう案内**
