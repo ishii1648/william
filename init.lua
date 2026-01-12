@@ -5,7 +5,7 @@ local config = require("config")
 local Launcher = require("core.launcher")
 
 -- ランチャーインスタンスを作成
-local launcher = Launcher:new(config)
+local launcher = Launcher.new(config)
 
 -- 初期化
 launcher:start()

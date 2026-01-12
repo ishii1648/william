@@ -7,7 +7,7 @@ PluginLoader.__index = PluginLoader
 --- 新しいPluginLoaderインスタンスを作成
 --- @param config table 設定
 --- @return table PluginLoaderインスタンス
-function PluginLoader:new(config)
+function PluginLoader.new(config)
     local self = setmetatable({}, PluginLoader)
     self.config = config
     self.loadedPlugins = {}

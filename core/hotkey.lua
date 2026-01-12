@@ -8,7 +8,7 @@ Hotkey.__index = Hotkey
 --- @param config table {mods: string[], key: string}
 --- @param callback function ホットキー押下時のコールバック
 --- @return table Hotkeyインスタンス
-function Hotkey:new(config, callback)
+function Hotkey.new(config, callback)
     local self = setmetatable({}, Hotkey)
 
     self.mods = config.mods or {"cmd", "alt"}

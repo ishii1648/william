@@ -1,14 +1,19 @@
 ---
 name: deploy
-description: Luaファイル編集後にlint + deployを実行。Use when Lua files (.lua) are edited or modified.
+description: Luaファイル編集後に必ず実行。lint + deployを行う。MUST run after editing any .lua files.
 ---
 
 worktreeをHammerspoonにデプロイし、静的解析を実行します。
 
-まず、現在のworktree名を特定してください（カレントディレクトリのパスから `.worktrees/` 以降の部分を抽出）。
+## 実行手順
 
-次に以下を**並列で**実行してください:
-- `make lint`
-- `make deploy WORKTREE=<worktree名>`
-
-両方成功したらHammerspoonをリロードするよう案内してください。
+1. **`make lint` を実行**
+2. **warning または error があれば修正**
+   - luacheck の出力を確認し、指摘された問題をすべて修正
+   - 再度 `make lint` を実行
+   - warning 0 になるまで繰り返す
+3. **`make test` を実行**
+   - テストが通ることを確認
+   - 失敗したら修正
+4. **lint と test が通ったら `make deploy` を実行**
+5. **成功したら Hammerspoon をリロードするよう案内**
