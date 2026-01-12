@@ -126,28 +126,13 @@ function Ghq:getChoices(query, settings)
     return choices
 end
 
---- ウィンドウタイトルでGhosttyウィンドウを検索してフォーカス
---- @param targetPath string 対象のパス
---- @return boolean フォーカスできたかどうか
-function Ghq.focusGhosttyWindowByPath(targetPath)
-    local ghostty = hs.application.find("Ghostty")
-    if not ghostty then return false end
-
-    -- パスの末尾のディレクトリ名を取得
-    local dirName = targetPath:match("([^/]+)$")
-    if not dirName then return false end
-
-    local windows = ghostty:allWindows()
-    for _, win in ipairs(windows) do
-        local title = win:title()
-        if title and title:find(dirName, 1, true) then
-            win:focus()
-            return true
-        end
-    end
-
-    -- 該当ウィンドウが見つからなくてもGhosttyをアクティベート
-    ghostty:activate()
+--- Ghosttyをアクティベート
+--- @return boolean 成功したかどうか
+function Ghq.focusGhostty()
+    -- 少し遅延してからアクティベート（ランチャーが閉じた後）
+    hs.timer.doAfter(0.1, function()
+        hs.application.open("Ghostty")
+    end)
     return true
 end
 
@@ -190,10 +175,9 @@ function Ghq.openInGhostty(targetPath)
         return
     end
 
-    -- 非同期でGhosttyの子シェルプロセスのcwdを取得
+    -- 非同期でシェルプロセスのcwdを取得（fish, zsh, bash対応）
     local script = [[
-        pids=$(pgrep -P $(pgrep -x Ghostty) 2>/dev/null)
-        for pid in $pids; do
+        for pid in $(pgrep -x fish 2>/dev/null) $(pgrep -x zsh 2>/dev/null) $(pgrep -x bash 2>/dev/null); do
             lsof -p "$pid" 2>/dev/null | grep cwd | awk '{print $NF}'
         done
     ]]
@@ -214,7 +198,7 @@ function Ghq.openInGhostty(targetPath)
         end
 
         if found then
-            Ghq.focusGhosttyWindowByPath(targetPath)
+            Ghq.focusGhostty()
         else
             Ghq.openNewGhosttyTab(targetPath)
         end
