@@ -1,7 +1,8 @@
 #!/bin/bash
 # worktreeをHammerspoonにデプロイ（上書きコピー）
 
-REPO_ROOT="/Users/sho/src/github.com/william"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 HS_DIR="$HOME/.hammerspoon"
 
 usage() {
@@ -71,4 +72,14 @@ rsync -a --delete \
     "$TARGET_PATH/" "$HS_DIR/"
 
 echo "Deployed: $TARGET_PATH -> $HS_DIR"
-echo "Run 'hs.reload()' in Hammerspoon console to apply changes"
+
+# Hammerspoon をリロード
+if command -v hs &> /dev/null; then
+    if hs -c "hs.reload()" 2>/dev/null; then
+        echo "Hammerspoon reloaded"
+    else
+        echo "Note: Could not reload Hammerspoon (not running or IPC not loaded)"
+    fi
+else
+    echo "Run 'hs.reload()' in Hammerspoon console to apply changes"
+fi

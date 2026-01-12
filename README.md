@@ -23,16 +23,17 @@ Alfredのようなランチャーを最小限の機能で自作したもの。Lu
 # Hammerspoonをインストール
 brew install hammerspoon --cask
 
+# hs CLIをインストール（Hammerspoonメニュー → Install CLI）
+# または手動で:
+# sudo ln -s /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs /usr/local/bin/hs
+
 # リポジトリをクローン
 ghq get github.com/ishii1648/william
 # または
 git clone https://github.com/ishii1648/william.git
 
-# ~/.hammerspoonにシンボリックリンクを作成
-ln -s /path/to/william ~/.hammerspoon
-
-# Hammerspoonを起動
-open -a Hammerspoon
+# ~/.hammerspoonにデプロイ（Hammerspoonも自動リロード）
+./scripts/deploy.sh
 ```
 
 ## 使い方
