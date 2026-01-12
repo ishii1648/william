@@ -156,8 +156,11 @@ end
 function Ghq.openNewGhosttyTab(targetPath)
     -- パス内のシングルクォートをエスケープ
     local escapedPath = targetPath:gsub("'", "'\\''")
+    local cdCommand = "cd '" .. escapedPath .. "'"
 
+    -- クリップボード経由でコマンドを送信（日本語入力モード対策）
     local script = string.format([[
+        set the clipboard to "%s"
         tell application "Ghostty"
             activate
         end tell
@@ -166,11 +169,12 @@ function Ghq.openNewGhosttyTab(targetPath)
             tell process "Ghostty"
                 keystroke "t" using command down
                 delay 0.3
-                keystroke "cd '%s' && clear"
+                keystroke "v" using command down
+                delay 0.1
                 keystroke return
             end tell
         end tell
-    ]], escapedPath)
+    ]], cdCommand)
 
     hs.osascript.applescript(script)
 end
