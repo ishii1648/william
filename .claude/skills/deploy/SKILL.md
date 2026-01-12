@@ -1,6 +1,6 @@
 ---
 name: deploy
-description: Luaファイル編集後にlint + deployを実行。Use when Lua files (.lua) are edited or modified.
+description: Luaファイル編集後に必ず実行。lint + deployを行う。MUST run after editing any .lua files.
 ---
 
 worktreeをHammerspoonにデプロイし、静的解析を実行します。

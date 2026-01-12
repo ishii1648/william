@@ -1,6 +1,6 @@
 ---
 name: implement
-description: 実装とテストをセットで行う。Use when implementing new features or modifying existing code.
+description: 機能追加・コード修正時に必ず使用。実装とテスト作成をセットで行う。MUST use when implementing features or modifying code.
 ---
 
 機能実装時は、コードとテストをセットで作成します。
