@@ -1,9 +1,9 @@
 ---
 name: implement
-description: 機能追加・コード修正時に必ず使用。実装とテスト作成をセットで行う。MUST use when implementing features or modifying code.
+description: 機能追加・コード修正時に必ず使用。実装・テスト作成・lint・deployまで一貫して行う。MUST use when implementing features or modifying code.
 ---
 
-機能実装時は、コードとテストをセットで作成します。
+機能実装時は、コード作成からデプロイまで一貫して行います。
 テストは別エージェントが作成し、実装者のバイアスを排除します。
 
 ## 実行手順
@@ -19,8 +19,14 @@ description: 機能追加・コード修正時に必ず使用。実装とテス�
      - 期待される振る舞いの概要
    - Hammerspoon依存（hs API）のモジュールはテスト対象外
 
-3. **`make test` を実行**
+3. **`make lint` を実行**
+   - luacheck の出力を確認
+   - warning または error があれば修正
+   - warning 0 になるまで繰り返す
+
+4. **`make test` を実行**
    - テストが通ることを確認
    - 失敗したら実装またはテストを修正
 
-4. **完了後は `/deploy` を実行するよう案内**
+5. **`make deploy` を実行**
+   - Hammerspoon へデプロイ
