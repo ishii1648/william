@@ -1,4 +1,6 @@
-.PHONY: test lint ci
+.PHONY: test lint ci deploy deploy-main help
+
+WORKTREE ?=
 
 # デフォルト: lint + test
 all: lint test
@@ -20,3 +22,28 @@ test-fuzzy:
 
 test-plugin-loader:
 	busted spec/core/plugin_loader_spec.lua
+
+# worktreeデプロイ
+deploy:
+	@if [ -z "$(WORKTREE)" ]; then \
+		echo "Error: WORKTREE is required"; \
+		echo "Usage: make deploy WORKTREE=<name>"; \
+		exit 1; \
+	fi
+	@./scripts/deploy.sh $(WORKTREE)
+
+# メインをデプロイ
+deploy-main:
+	@./scripts/deploy.sh main
+
+# ヘルプ
+help:
+	@echo "Usage:"
+	@echo "  make lint                        # luacheckを実行"
+	@echo "  make test                        # テストを実行"
+	@echo "  make ci                          # lint + test"
+	@echo "  make deploy WORKTREE=<name>      # worktreeをデプロイ"
+	@echo "  make deploy-main                 # メインをデプロイ"
+	@echo ""
+	@echo "Available worktrees:"
+	@ls -1 .worktrees/ 2>/dev/null || echo "  (none)"

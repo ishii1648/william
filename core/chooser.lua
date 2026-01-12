@@ -76,4 +76,16 @@ function Chooser:isVisible()
     return self.hsChooser:isVisible()
 end
 
+--- 選択中の行インデックスを取得（1始まり）
+--- @return number
+function Chooser:selectedRow()
+    return self.hsChooser:selectedRow()
+end
+
+--- 選択行を設定
+--- @param row number 行インデックス（1始まり）
+function Chooser:setSelectedRow(row)
+    self.hsChooser:selectedRow(row)
+end
+
 return Chooser

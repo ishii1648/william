@@ -18,6 +18,9 @@ function Launcher:new(config)
     self.hotkey = nil
     self.pluginLoader = nil
     self.plugins = {}
+    self.modifierWatcher = nil
+    self.lastShiftState = false
+    self.currentQuery = ""
     return self
 end
 
@@ -40,6 +43,20 @@ function Launcher:start()
     end)
     self.hotkey:enable()
 
+    -- 修飾キーの変化を監視（Shiftキーで表示を切り替え）
+    self.modifierWatcher = hs.eventtap.new({hs.eventtap.event.types.flagsChanged}, function(e)
+        if self.chooser:isVisible() then
+            local mods = e:getFlags()
+            local currentShift = mods.shift or false
+            if self.lastShiftState ~= currentShift then
+                self.lastShiftState = currentShift
+                self:refreshChoices()
+            end
+        end
+        return false
+    end)
+    self.modifierWatcher:start()
+
     hs.notify.new({title = "My Rancher", informativeText = "Launcher ready!"}):send()
 end
 
@@ -50,6 +67,9 @@ function Launcher:stop()
     end
     if self.chooser then
         self.chooser:hide()
+    end
+    if self.modifierWatcher then
+        self.modifierWatcher:stop()
     end
 end
 
@@ -72,8 +92,30 @@ end
 --- クエリ変更時の処理
 --- @param query string 検索クエリ
 function Launcher:handleQueryChange(query)
-    local choices = self:collectChoices(query)
+    self.currentQuery = query or ""
+    local choices = self:collectChoices(self.currentQuery)
     self.chooser:setChoices(choices)
+end
+
+--- 現在のクエリで候補を再取得
+function Launcher:refreshChoices()
+    local selectedRow = self.chooser:selectedRow()
+    local choices = self:collectChoices(self.currentQuery)
+
+    -- Shiftが押されていて、選択行にgithubUrlがあればsubTextをURLに変更
+    if self.lastShiftState and selectedRow > 0 and choices[selectedRow] then
+        local choice = choices[selectedRow]
+        if choice.githubUrl then
+            choice.subText = choice.githubUrl
+        end
+    end
+
+    self.chooser:setChoices(choices)
+
+    -- 選択位置を復元
+    if selectedRow > 0 then
+        self.chooser:setSelectedRow(selectedRow)
+    end
 end
 
 --- 全プラグインから候補を収集
@@ -84,7 +126,7 @@ function Launcher:collectChoices(query)
     local lowerQuery = (query or ""):lower()
 
     -- プレフィックスに一致する排他的プラグインを探す
-    local exclusivePlugin
+    local exclusivePlugin = nil
     for _, plugin in ipairs(self.plugins) do
         if plugin.prefix and lowerQuery:match("^" .. plugin.prefix:lower()) then
             exclusivePlugin = plugin

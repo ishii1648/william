@@ -14,6 +14,9 @@ local cachedRepos = nil
 local cacheTime = nil
 local CACHE_TTL = 300
 
+-- ghqコマンドのパス
+local GHQ_PATH = "/usr/local/bin/ghq"
+
 --- 初期化
 --- @param settings table プラグイン設定
 function Ghq:init(settings)
@@ -23,8 +26,8 @@ end
 
 --- ghq rootのパスを取得
 --- @return string|nil ghq rootパス
-function Ghq:getGhqRoot()
-    local output, status = hs.execute("cd ~ && ghq root", true)
+function Ghq.getGhqRoot()
+    local output, status = hs.execute("cd ~ && " .. GHQ_PATH .. " root", true)
     if status then
         return output:gsub("\n$", "")
     end
@@ -33,7 +36,7 @@ end
 
 --- リポジトリ一覧を取得
 --- @return table リポジトリ情報の配列
-function Ghq:getRepos()
+function Ghq.getRepos()
     local now = os.time()
 
     -- キャッシュが有効ならそれを返す
@@ -42,10 +45,10 @@ function Ghq:getRepos()
     end
 
     local repos = {}
-    local output, status = hs.execute("cd ~ && ghq list", true)
+    local output, status = hs.execute("cd ~ && " .. GHQ_PATH .. " list", true)
 
     if status then
-        local ghqRoot = self:getGhqRoot()
+        local ghqRoot = Ghq.getGhqRoot()
 
         for repoPath in output:gmatch("[^\n]+") do
             -- repoPath例: "github.com/owner/repo"
@@ -76,14 +79,17 @@ end
 function Ghq:getChoices(query, settings)
     self.settings = settings
 
+    -- 先頭の空白を除去
+    local trimmedQuery = (query or ""):gsub("^%s+", "")
+
     -- "gh"で始まらない場合は候補を返さない
-    if not query or query == "" or not query:lower():match("^gh") then
+    if trimmedQuery == "" or not trimmedQuery:lower():match("^gh") then
         return {}
     end
 
     -- "gh"以降の部分を検索クエリとして使用（先頭空白除去）
-    local searchQuery = query:sub(3):gsub("^%s+", "")
-    local repos = self:getRepos()
+    local searchQuery = trimmedQuery:sub(3):gsub("^%s+", "")
+    local repos = Ghq.getRepos()
     local choices = {}
 
     for _, repo in ipairs(repos) do
@@ -122,8 +128,8 @@ end
 
 --- 選択時のアクション
 --- @param choice table 選択された候補
---- @param settings table プラグイン設定
-function Ghq:execute(choice, settings)
+--- @param _settings table プラグイン設定
+function Ghq.execute(_self, choice, _settings)
     if not choice then return end
 
     -- 修飾キーを確認
