@@ -5,8 +5,10 @@ description: Luaファイル編集後にlint + deployを実行。Use when Lua fi
 
 worktreeをHammerspoonにデプロイし、静的解析を実行します。
 
-以下を**並列で**実行してください:
+まず、現在のworktree名を特定してください（カレントディレクトリのパスから `.worktrees/` 以降の部分を抽出）。
+
+次に以下を**並列で**実行してください:
 - `make lint`
-- `make deploy WORKTREE=feat/ghq`
+- `make deploy WORKTREE=<worktree名>`
 
 両方成功したらHammerspoonをリロードするよう案内してください。
